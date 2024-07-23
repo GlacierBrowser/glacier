@@ -1,7 +1,6 @@
 <div align="center">
   <img src="images/icon.png" alt="Logo" height="200">
   <h1>Glacier</h1>
-  <br>
   <p><b>Glacier is a web browser.</b></p>
   <!--
   <a href="https://matrix.to/#/#glacier:matrix.org"><img src="https://img.shields.io/matrix/glacier:matrix.org.svg"></a>
