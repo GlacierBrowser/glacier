@@ -91,7 +91,7 @@ class AboutDialog(QDialog):
 
         logo = QLabel()
         logo.setPixmap(QPixmap(os.path.join(
-            glacier_path, 'images', 'glacier-icon-64.png')))
+            glacier_path, 'images', 'icon.png')))
         layout.addWidget(logo)
 
         layout.addWidget(QLabel("Version " + version))
@@ -364,7 +364,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Glacier")
 
         self.setWindowIcon(
-            QIcon(os.path.join(glacier_path, 'images', 'glacier-icon-64.png')))
+            QIcon(os.path.join(glacier_path, 'images', 'icon.png')))
 
         global jsEnabled
         jsEnabled = True
