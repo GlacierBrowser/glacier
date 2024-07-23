@@ -4,3 +4,5 @@ https://en.wikipedia.org/
 https://stackoverflow.com/
 https://github.com/
 https://duckduckgo.com/
+https://www.youtube.com/watch?v=LKCVKw9CzFo
+https://github.com/GlacierBrowser/glacier

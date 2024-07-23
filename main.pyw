@@ -196,6 +196,20 @@ class MainWindow(QMainWindow):
         self.urlbar = QLineEdit()
         self.urlbar.returnPressed.connect(self.navigate_to_url)
         self.urlbar.setFont(QFont("Arial", 10))
+        self.urlbar.setStyleSheet("""""")
+        self.urlbar.setStyleSheet("""
+        QLineEdit {
+            border-radius: 10px;
+            padding: 4px;
+        }
+        QLineEdit:hover {
+            border-radius: 10px;
+            padding: 4px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgba(0, 113, 255, 255), stop:1 rgba(91, 171, 252, 255));
+        }
+        """)
         navtb.addWidget(self.urlbar)
 
         add_bookmark_btn = QAction(QIcon(os.path.join(
@@ -487,6 +501,8 @@ class MainWindow(QMainWindow):
         browser.setPage(webpage)
         QWebEngineProfile.defaultProfile().downloadRequested.connect(
             self.on_downloadRequested)
+        browser.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
+        browser.page().fullScreenRequested.connect(lambda request: request.accept())
         browser.loadFinished.connect(self.onLoadFinished)
         browser.setUrl(qurl)
         newtabI = self.tabs.addTab(browser, label)
@@ -824,11 +840,10 @@ glacier_path = glacier_path.replace("\\", "/")
 with open(glacier_path + 'config.toml', 'r') as f:
     config = toml.loads(f.read())
 
-if config['theme'] != "default":
-    with open(glacier_path + "themes/" + config['theme'] + ".qss", 'r') as f:
-        style = f.read()
-        # Set the stylesheet of the application
-        app.setStyleSheet(style)
+with open(glacier_path + "themes/" + config['theme'] + ".qss", 'r') as f:
+    style = f.read()
+    # Set the stylesheet of the application
+    app.setStyleSheet(style)
 
 if config['homepage'] == "default":
     homepage = "file:///html/newtab.html"
