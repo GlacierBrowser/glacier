@@ -1,10 +1,10 @@
 <div align="center">
   <img src="images/icon.png" alt="Logo" height="200">
   <h1>Glacier</h1>
-  <p><b>Glacier is a web browser.</b></p>
+  <p><b>Glacier is an open-source web browser with extensive customization capabilities.</b></p>
   <p><a href="#contributors"><img src="https://img.shields.io/github/all-contributors/GlacierBrowser/glacier?style=for-the-badge" alt="All Contributors"><a><p>
+  <img alt="Discord" src="https://img.shields.io/discord/1265361594154483873?style=for-the-badge&label=Discord&link=https%3A%2F%2Fdiscord.gg%2Fsfw3Uy2VZM">
   <!--
-  <a href="https://matrix.to/#/#glacier:matrix.org"><img src="https://img.shields.io/matrix/glacier:matrix.org.svg"></a>
   <a href="Our website once we get one">Website.</a>
   -->
   <br><br>
