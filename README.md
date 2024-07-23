@@ -2,7 +2,7 @@
   <img src="images/icon.png" alt="Logo" height="200">
   <h1>Glacier</h1>
   <p><b>Glacier is a web browser.</b></p>
-  <p><a href="#contributors"><img src="https://img.shields.io/github/all-contributors/GlacierBrowser/glacier?color=ee8449&style=flat-square" alt="All Contributors"><a><p>
+  <p><a href="#contributors"><img src="https://img.shields.io/github/all-contributors/GlacierBrowser/glacier?style=for-the-badge" alt="All Contributors"><a><p>
   <!--
   <a href="https://matrix.to/#/#glacier:matrix.org"><img src="https://img.shields.io/matrix/glacier:matrix.org.svg"></a>
   <a href="Our website once we get one">Website.</a>
