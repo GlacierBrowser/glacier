@@ -1,4 +1,21 @@
 {
   "projectName": "glacier",
-  "projectOwner": "GlacierBrowser"
+  "projectOwner": "GlacierBrowser",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "ProgramminCat",
+      "name": "ProgramminCat",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72707293?v=4",
+      "profile": "https://github.com/ProgramminCat",
+      "contributions": [
+        "code"
+      ]
+    }
+  ]
 }
