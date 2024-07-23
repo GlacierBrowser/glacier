@@ -547,7 +547,7 @@ class MainWindow(QMainWindow):
                                      self.setWindowTitle(self.tabs.currentWidget().page().title() + " - Glacier"))
 
         browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
-                                     self.tabs.setTabText(newtabI, browser.page().title()[:30]))
+                                     self.tabs.setTabText(newtabI, self.tabs.currentWidget().page().title()[:30]))
 
         global jsEnabled
         browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
