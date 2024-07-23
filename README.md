@@ -11,7 +11,9 @@
 
 ## Installation
 
-TODO
+    git clone https://github.com/GlacierBrowser/glacier
+    cd glacier
+    python main.pyw
 
 ## Contributing
 
