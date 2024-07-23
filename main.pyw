@@ -153,8 +153,8 @@ class MainWindow(QMainWindow):
         self.statusBar().addWidget(self.cmd_prompt)
         self.cmd_prompt.hide()
 
-        names = ["quit", "newtab", "reload", "close_current_tab",
-                 "new_window", "o", "add_bookmark", "show_license", "help", "open_internet_archive"]
+        names = ["/quit", "/newtab", "/reload", "/close_current_tab",
+                 "/new_window", "/o", "/add_bookmark", "/show_license", "/help", "/open_internet_archive"]
         self.cmd_prompt.setCompleter(QCompleter(names))
 
         navtb = QToolBar("Navigation")
@@ -350,7 +350,7 @@ class MainWindow(QMainWindow):
         self.shortcut.activated.connect(
             lambda: self.close_current_tab(self.tabs.currentIndex()))
 
-        self.shortcut = QShortcut(QKeySequence("Ctrl+;"), self)
+        self.shortcut = QShortcut(QKeySequence("Ctrl+/"), self)
         self.shortcut.activated.connect(self.toggle_cmd_prompt)
 
         self.shortcut = QShortcut(QKeySequence("Ctrl+U"), self)
@@ -417,6 +417,13 @@ class MainWindow(QMainWindow):
 
     def do_cmd(self):
         cmd = self.cmd_prompt.text()
+        if cmd.startswith("/"):
+            cmd = cmd[1:]
+        else:
+            self.status.showMessage("Command must start with a slash.", 2000)
+            self.cmd_prompt.setText("")
+            self.cmd_prompt.hide()
+            return
 
         if cmd == "quit":
             sys.exit()
@@ -448,6 +455,7 @@ class MainWindow(QMainWindow):
 
     def toggle_cmd_prompt(self):
         self.cmd_prompt.show()
+        self.cmd_prompt.setText("/")
         self.cmd_prompt.setFocus()
 
     @pyqtSlot("QWebEngineDownloadItem*")
@@ -832,7 +840,7 @@ else:
     homepage = config['homepage']
 
 if config['search_engine_url'] == "default":
-    search_engine_url = "https://duckduckgo.com/search?q=%s"
+    search_engine_url = "https://duckduckgo.com/search?t=ffab&q=%s"
 else:
     search_engine_url = config['search_engine_url']
 
