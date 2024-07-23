@@ -1,0 +1,10 @@
+theme = "default"
+
+homepage = "default"
+
+# Put %s in place of query
+search_engine_url = "default"
+
+show_experimental_buttons = "yes"
+
+list = "blacklist"
