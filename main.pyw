@@ -638,7 +638,7 @@ class MainWindow(QMainWindow):
             url = self.urlbar.text()
 
         if url.startswith(":yt "):
-            url = url.replace(":yt ", "https://yewtu.be/search?q=")
+            url = url.replace(":yt ", "https://www.youtube.com/results?search_query=")
 
         q = QUrl(url)
         if q.scheme() == "":
@@ -745,14 +745,10 @@ class WebPage(QWebEnginePage):
         urlString = url.toString()
         redirecting = False
 
-        if "youtube.com" in urlString:
-            if url.host() != "accounts.youtube.com":
-                urlString = urlString.replace("youtube.com", "yewtu.be")
-                redirecting = True
-        elif "translate.google.com" in urlString:
-            urlString = urlString.replace(
-                "translate.google.com", "simplytranslate.org")
-            redirecting = True
+        #if "google.com" in urlString:
+        #    urlString = urlString.replace(
+        #        "google.com", "duckduckgo.com")
+        #    redirecting = True
         if redirecting:
             window.navigate_to_url(urlString)
 
@@ -840,7 +836,7 @@ else:
     homepage = config['homepage']
 
 if config['search_engine_url'] == "default":
-    search_engine_url = "https://duckduckgo.com/search?t=ffab&q=%s"
+    search_engine_url = "https://duckduckgo.com/?t=ffab&q=%s"
 else:
     search_engine_url = config['search_engine_url']
 
