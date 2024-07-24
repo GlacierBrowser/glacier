@@ -21,6 +21,7 @@ import re
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+import requests
 
 version = "0.01"
 is_64bits = sys.maxsize > 2**32
@@ -102,7 +103,6 @@ class AboutDialog(QDialog):
         layout.addWidget(self.buttonBox)
 
         self.setLayout(layout)
-
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -384,6 +384,28 @@ class MainWindow(QMainWindow):
         jsEnabled = True
         self.tabs.currentWidget().page().settings().setAttribute(
             QWebEngineSettings.JavascriptEnabled, jsEnabled)
+        self.tabs.currentWidget().page().profile().setHttpUserAgent(
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+        )
+
+        leftToolBar = QToolBar("Quickbar", self)
+        leftToolBar.setMovable(False)
+        self.addToolBar(Qt.LeftToolBarArea, leftToolBar)
+
+        self.addToQuickSidebar(leftToolBar, "https://static.vecteezy.com/system/resources/previews/002/557/425/original/google-mail-icon-logo-isolated-on-transparent-background-free-vector.jpg", "https://gmail.com/", "Gmail")
+        self.addToQuickSidebar(leftToolBar, "https://www.youtube.com/favicon.ico", "https://www.youtube.com/", "Youtube")
+        self.addToQuickSidebar(leftToolBar, "https://en.wikipedia.org/favicon.ico", "https://en.wikipedia.org", "Wikipedia")
+        self.addToQuickSidebar(leftToolBar, "https://www.netflix.com/favicon.ico", "https://www.netflix.com/", "Netflix")
+
+    def addToQuickSidebar(self, leftToolBar, icon, url, name):
+        response = requests.get(icon)
+        pixmap = QPixmap()
+        pixmap.loadFromData(response.content)
+        myicon = QIcon(pixmap)
+        yt_btn = QAction(myicon, name, self)
+        yt_btn.setStatusTip(name)
+        yt_btn.triggered.connect(lambda: self.add_new_tab(QUrl(url)))
+        leftToolBar.addAction(yt_btn)
 
     def getBookmarks(self):
         bookmarks_file = open(glacier_path + 'bookmarks.txt', 'r')
