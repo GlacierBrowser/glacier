@@ -42,11 +42,20 @@ class DevToolWidget(QWidget):
 		response = requests.get(url)
 		tree = fromstring(response.content)
 		txt = "<h2>Site Information</h2>"
-		txt += "Title: " + tree.findtext('.//title') + "<br>"
-		txt += "Description: " + tree.xpath('/html/head/meta[@name="description"]/@content')[0] + "<br>"
+		txt += "<b>" + tree.findtext('.//title') + "</b><br>"
+		if len(tree.xpath('/html/head/meta[@name="description"]/@content'))>0:
+			txt += "" + tree.xpath('/html/head/meta[@name="description"]/@content')[0] + "<br><br>"
 		if "Content-Type" in response.headers:
-			txt += "Content Type: " + response.headers["Content-Type"] + "<br>"
-		txt += f"Total Response Time: {response.elapsed.total_seconds()} seconds"
+			txt += "Content Type: <br>" + response.headers["Content-Type"] + "<br><br>"
+		txt += f"Total Response Time: <br>{response.elapsed.total_seconds()} seconds<br><br>"
+		if len(tree.xpath('//meta[@name="viewport"]/@content'))>0:
+			txt += "Viewport: <br>" + tree.xpath('//meta[@name="viewport"]/@content')[0] + "<br><br>"
+		if len(tree.xpath('//meta[@charset]/@content'))>0:
+			txt += "Charset: <br>" + tree.xpath('//meta[@charset]/@content')[0] + "<br><br>"
+		if len(tree.xpath('//html/@lang/@content'))>0:
+			txt += "Language: <br>" + tree.xpath('//html/@lang/@content')[0] + "<br><br>"
+		if len(tree.xpath("//meta[@name='theme-color']/@content"))>0:
+			txt += "Theme Color: <br>" + tree.xpath("//meta[@name='theme-color']/@content")[0] + "<br><br>"
 		return txt
 
 if __name__ == '__main__':

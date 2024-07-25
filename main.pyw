@@ -568,7 +568,8 @@ class MainWindow(QMainWindow):
                     html += "<a href='" + j + "'>" + j + "</a><br>"
             elif url.split("/")[2].split("?")[0] == "dev":
                 print(url.split("?")[1])
-                self.tabs.addTab(devtools.DevToolWidget(url.split("?")[1]), "dev-tools")
+                t = self.tabs.currentWidget().page().title()
+                self.tabs.addTab(devtools.DevToolWidget(url.split("?")[1]), t + " - Developer Mode")
                 self.tabs.removeTab(newtabI)
 
             newtab.setHtml(html)
@@ -651,7 +652,7 @@ class MainWindow(QMainWindow):
         self.add_new_tab(QUrl("glacier://history"), "History")
 
     def devtools(self):
-        self.add_new_tab(QUrl("glacier://dev?https://www.google.com"), "Dev Tools")
+        self.add_new_tab(QUrl("glacier://dev?" + self.tabs.currentWidget().url().toString()), "Dev Tools")
 
     def open_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open file", "",
