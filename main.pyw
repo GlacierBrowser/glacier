@@ -23,6 +23,9 @@ from tkinter import ttk
 from tkinter import *
 import requests
 
+# Imports from files
+from components import adblock, devtools
+
 version = "0.01"
 is_64bits = sys.maxsize > 2**32
 
@@ -247,6 +250,10 @@ class MainWindow(QMainWindow):
             QIcon(os.path.join('images', 'wrench.png')), "Open Web Developer Tools", self)
         webdev_tools_action.triggered.connect(self.open_webdev_tools)
         menu.addAction(webdev_tools_action)
+
+        devmode_action = QAction("Open page in Developer Mode", self)
+        devmode_action.triggered.connect(self.devtools)
+        menu.addAction(devmode_action)
 
         settings_action = QAction(
             QIcon(os.path.join('images', 'wrench.png')), "Settings", self)
@@ -535,6 +542,8 @@ class MainWindow(QMainWindow):
         url = qurl.toString()
         if qurl.scheme() == "glacier":
             html = ""
+            print(url)
+            print(url.split("/")[2])
             if url.split("/")[2] == "about":
                 with open(glacier_path + "html/about.html", 'r') as f:
                     html = f.read()
@@ -557,6 +566,10 @@ class MainWindow(QMainWindow):
                 html += "<title>Bookmarks</title>"
                 for j in self.getBookmarks():
                     html += "<a href='" + j + "'>" + j + "</a><br>"
+            elif url.split("/")[2].split("?")[0] == "dev":
+                print(url.split("?")[1])
+                self.tabs.addTab(devtools.DevToolWidget(url.split("?")[1]), "dev-tools")
+                self.tabs.removeTab(newtabI)
 
             newtab.setHtml(html)
         else:
@@ -565,54 +578,57 @@ class MainWindow(QMainWindow):
             browser.urlChanged.connect(lambda qurl, browser=browser:
                                        self.update_urlbar(qurl, browser))
 
-        browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
-                                     self.setWindowTitle(self.tabs.currentWidget().page().title() + " - Glacier"))
+        if type(self.tabs.widget(newtabI)) == QtWebEngineWidgets.QWebEngineView and not url.startswith("glacier:"):
+            browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
+                                        self.setWindowTitle(self.tabs.currentWidget().page().title() + " - Glacier"))
 
-        browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
-                                     self.tabs.setTabText(newtabI, self.tabs.currentWidget().page().title()[:30]))
+            browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
+                                        self.tabs.setTabText(newtabI, self.tabs.currentWidget().page().title()[:30]))
 
-        global jsEnabled
-        browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
-                                     self.tabs.currentWidget().page().settings().setAttribute(QWebEngineSettings.JavascriptEnabled, jsEnabled))
+            global jsEnabled
+            browser.loadFinished.connect(lambda _, i=newtabI, browser=browser:
+                                        self.tabs.currentWidget().page().settings().setAttribute(QWebEngineSettings.JavascriptEnabled, jsEnabled))
 
-        browser.iconChanged.connect(lambda _, i=newtabI, browser=browser:
-                                    self.tabs.setTabIcon(newtabI, browser.icon()))
+            browser.iconChanged.connect(lambda _, i=newtabI, browser=browser:
+                                        self.tabs.setTabIcon(newtabI, browser.icon()))
 
         self.tabs.setCurrentIndex(newtabI)
 
     def onLoadFinished(self, ok):
-        if is_64bits:
-            bits = "64-bit"
-        else:
-            bits = "32-bit"
-        if ok:
-            if self.tabs.currentWidget().page().url().toString() == "file:///html/about.html":
-                self.tabs.currentWidget().page().runJavaScript(
-                    "document.getElementById('glacier_version').innerHTML = 'Version " + version + " (" + bits + ")';")
+        if type(self.tabs.currentWidget()) == QtWebEngineWidgets.QWebEngineView:
+            if is_64bits:
+                bits = "64-bit"
+            else:
+                bits = "32-bit"
+            if ok:
+                if self.tabs.currentWidget().page().url().toString() == "file:///html/about.html":
+                    self.tabs.currentWidget().page().runJavaScript(
+                        "document.getElementById('glacier_version').innerHTML = 'Version " + version + " (" + bits + ")';")
 
-            if self.tabs.currentWidget().page().url().toString() == "file:///html/newtab.html":
-                self.tabs.currentWidget().page().runJavaScript(
-                    "document.getElementById('searchform').action = '" + search_engine_url.split("?")[0] + "';")
+                if self.tabs.currentWidget().page().url().toString() == "file:///html/newtab.html":
+                    self.tabs.currentWidget().page().runJavaScript(
+                        "document.getElementById('searchform').action = '" + search_engine_url.split("?")[0] + "';")
 
-            if not self.tabs.currentWidget().page().url().toString().startswith("file:///"):
-                self.tabs.currentWidget().page().runJavaScript("""
-                var r = document.getElementsByTagName('script');
+                if not self.tabs.currentWidget().page().url().toString().startswith("file:///"):
+                    self.tabs.currentWidget().page().runJavaScript("""
+                    var r = document.getElementsByTagName('script');
 
-                for (var i = (r.length-1); i >= 0; i--) {
-                    if(r[i].src.includes("pagead") || r[i].src.includes("ad")){
-                        r[i].parentNode.removeChild(r[i]);
+                    for (var i = (r.length-1); i >= 0; i--) {
+                        if(r[i].src.includes("pagead") || r[i].src.includes("ad")){
+                            r[i].parentNode.removeChild(r[i]);
+                        }
                     }
-                }
-                """)
+                    """)
 
     def tab_open_doubleclick(self, i):
         if i == -1:  # No tab under the click
             self.add_new_tab()
 
     def current_tab_changed(self, i):
-        qurl = self.tabs.currentWidget().url()
-        self.update_urlbar(qurl, self.tabs.currentWidget())
-        self.update_title(self.tabs.currentWidget())
+        if type(self.tabs.currentWidget()) == QtWebEngineWidgets.QWebEngineView:
+            qurl = self.tabs.currentWidget().url()
+            self.update_urlbar(qurl, self.tabs.currentWidget())
+            self.update_title(self.tabs.currentWidget())
 
     def close_current_tab(self, i):
         if self.tabs.count() < 2:
@@ -633,6 +649,9 @@ class MainWindow(QMainWindow):
 
     def history(self):
         self.add_new_tab(QUrl("glacier://history"), "History")
+
+    def devtools(self):
+        self.add_new_tab(QUrl("glacier://dev?https://www.google.com"), "Dev Tools")
 
     def open_file(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open file", "",
@@ -807,11 +826,10 @@ class WebPage(QWebEnginePage):
                         match = line.strip()
                         match = match.replace(" ", "")
                         match = match.replace("//@match", "")
-                        matches = match.split("*")
-                        runUserscript = True
-                        for matche in matches:
-                            if not matche in urlString:
-                                runUserscript = False
+                        runUserscript = False
+                        if match in urlString:
+                            runUserscript = True
+                            print("Running userscript: " + name.replace("\\", "/"))
 
                 js = ""
                 for line in lines:
