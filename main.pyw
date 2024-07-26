@@ -31,7 +31,7 @@ is_64bits = sys.maxsize > 2**32
 
 
 def show_settings():
-    with open('config.toml') as f:
+    with open(os.path.expanduser('~/.glaciercnfg/config.toml').replace("\\", "/")) as f:
         configfile = f.read()
 
     root = tk.Tk()
@@ -55,7 +55,7 @@ def show_settings():
 
     def saveInput():
         inp = inputtxt.get(1.0, "end-1c")
-        with open("config.toml", "w") as f:
+        with open(os.path.expanduser('~/.glaciercnfg/config.toml').replace("\\", "/"), "w") as f:
             f.write(inp)
 
     # TextBox Creation
@@ -878,8 +878,16 @@ glacier_path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 # Think forward not backwards
 glacier_path = glacier_path.replace("\\", "/")
 
-with open(glacier_path + 'config.toml', 'r') as f:
-    config = toml.loads(f.read())
+try:
+    with open(os.path.expanduser('~/.glaciercnfg/config.toml').replace("\\", "/"), 'r') as f:
+        config = toml.loads(f.read())
+except FileNotFoundError:
+    print("Config file not found.")
+    print("Config file should be located in: " + os.path.expanduser('~/.glaciercnfg/config.toml').replace("\\", "/"))
+    print("Aborting program.")
+    exit()
+except Exception as e:
+    print("error with opening config file" + e.message)
 
 with open(glacier_path + "themes/" + config['theme'] + ".qss", 'r') as f:
     style = f.read()
