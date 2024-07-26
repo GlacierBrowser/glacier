@@ -894,15 +894,21 @@ with open(glacier_path + "themes/" + config['theme'] + ".qss", 'r') as f:
     # Set the stylesheet of the application
     app.setStyleSheet(style)
 
-if config['homepage'] == "default":
+if 'homepage' in config:
+    if config['homepage'] == "default":
+        homepage = "file:///html/newtab.html"
+    else:
+        homepage = config['homepage']
+else:
     homepage = "file:///html/newtab.html"
-else:
-    homepage = config['homepage']
 
-if config['search_engine_url'] == "default":
-    search_engine_url = "https://duckduckgo.com/?t=ffab&q=%s"
+if 'search_engine_url' in config:
+    if config['search_engine_url'] == "default":
+        search_engine_url = "https://duckduckgo.com/?t=ffab&q=%s"
+    else:
+        search_engine_url = config['search_engine_url']
 else:
-    search_engine_url = config['search_engine_url']
+    search_engine_url = "https://duckduckgo.com/?t=ffab&q=%s"
 
 window = MainWindow()
 app.exec_()
