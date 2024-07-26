@@ -765,6 +765,13 @@ class WebEngineUrlRequestInterceptor(QtWebEngineCore.QWebEngineUrlRequestInterce
     def interceptRequest(self, info):
         url = info.requestUrl().toString()
 
+        if (
+            url.host() == "www.youtube.com"
+            and url.path() == "/get_video_info"
+            and "&adformat=" in url.query()
+        ):
+            info.block()
+
 
 class WebPage(QWebEnginePage):
     _windows = {}
