@@ -15,9 +15,11 @@ class OnboardingWindow(QWidget):
         # Create the tab widget with two tabs
         self.tabWidget = QTabWidget()
         self.tabWidget.setStyleSheet("QTabBar::tab { height: 0px; width: 0px; }")
+        self.tabWidget.addTab(self.page0UI(), "welcome")
         self.tabWidget.addTab(self.page1UI(), "Default Search Engine")
-        self.tabWidget.addTab(self.page2UI(), "New Tab Page")
-        self.tabWidget.addTab(self.page3UI(), "Finish")
+        self.tabWidget.addTab(self.page2UI(), "Favourites")
+        self.tabWidget.addTab(self.page3UI(), "New Tab Page")
+        self.tabWidget.addTab(self.page4UI(), "Finish")
         layout.addWidget(self.tabWidget)
 
     def finish(self):
@@ -37,9 +39,19 @@ class OnboardingWindow(QWidget):
             search_engine = "https://ca.search.yahoo.com/search?p=%s"
         elif search_engine_name == 'Bing':
             search_engine = "https://www.bing.com/search?q=%s"
+        
+        newtabpage = ""
+        newtabpagetext = self.newtabpagecombobox.currentText()
+        if newtabpagetext == 'Default':
+            newtabpage = "default"
+        if newtabpagetext == 'DuckDuckGo':
+            newtabpage = "https://start.duckduckgo.com/"
+        if newtabpagetext == 'Google':
+            newtabpage = "https://www.google.ca/"
 
         options = {
-            "search_engine_url": search_engine
+            "search_engine_url": search_engine,
+            "homepage": newtabpage
         }
 
         with open(os.path.expanduser('~/.glaciercnfg/config.toml'), 'w') as f:
@@ -75,6 +87,23 @@ class OnboardingWindow(QWidget):
 
         layout.addWidget(self.widget)
 
+    def page0UI(self):
+        generalTab = QWidget()
+        layout = QVBoxLayout()
+        hlabel = QLabel("Welcome to Glacier!")
+        hlabel.setStyleSheet("QLabel{font-size: 18pt;}")
+        layout.addWidget(hlabel)
+        label = QLabel("There's lots to explore in the endless sea of Glacier!")
+        label.setStyleSheet("QLabel{font-size: 10pt;}")
+        layout.addWidget(label)
+
+        self.startsetupbtn = QPushButton("Start setup >")
+        self.startsetupbtn.clicked.connect(self.next_tab)
+        layout.addWidget(self.startsetupbtn)
+
+        generalTab.setLayout(layout)
+        return generalTab
+
     def page1UI(self):
         generalTab = QWidget()
         layout = QVBoxLayout()
@@ -94,13 +123,21 @@ class OnboardingWindow(QWidget):
     def page2UI(self):
         networkTab = QWidget()
         layout = QVBoxLayout()
-        hlabel = QLabel("New Tab Page")
+        hlabel = QLabel("Select some favourites")
         hlabel.setStyleSheet("QLabel{font-size: 18pt;}")
         layout.addWidget(hlabel)
 
-        combobox = QComboBox()
-        combobox.addItems(['Default', 'DuckDuckGo', 'Google']) # TODO: Add custom new tab option
-        layout.addWidget(combobox)
+        self.widget = QWidget()
+
+        layout_h = QHBoxLayout(self.widget)
+
+        favsites = ["Youtube", "Gmail", "Wikipedia", "Netflix", "Twitter", "Reddit"]
+
+        for site in favsites:
+            CkBox = QCheckBox(text=site)
+            layout_h.addWidget(CkBox)
+
+        layout.addWidget(self.widget)
 
         self.next_prev_btns(layout)
 
@@ -108,8 +145,30 @@ class OnboardingWindow(QWidget):
         return networkTab
 
     def page3UI(self):
+        networkTab = QWidget()
+        layout = QVBoxLayout()
+        hlabel = QLabel("New Tab Page")
+        hlabel.setStyleSheet("QLabel{font-size: 18pt;}")
+        layout.addWidget(hlabel)
+
+        self.newtabpagecombobox = QComboBox()
+        self.newtabpagecombobox.addItems(['Default', 'DuckDuckGo', 'Google']) # TODO: Add custom new tab option
+        layout.addWidget(self.newtabpagecombobox)
+
+        self.next_prev_btns(layout)
+
+        networkTab.setLayout(layout)
+        return networkTab
+
+    def page4UI(self):
         finishTab = QWidget()
         layout = QVBoxLayout()
+        lbl = QLabel("Welcome to Glacier!")
+        lbl.setStyleSheet("QLabel{font-size: 18pt;}")
+        layout.addWidget(lbl)
+        lbl = QLabel("It's time to start browsing!")
+        lbl.setStyleSheet("QLabel{font-size: 13pt;}")
+        layout.addWidget(lbl)
 
         layout.addStretch()
 
