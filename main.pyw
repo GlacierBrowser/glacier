@@ -24,7 +24,7 @@ from tkinter import *
 import requests
 
 # Imports from files
-from components import adblock, devtools
+from components import adblock, devtools, onboarding
 
 version = "0.01"
 is_64bits = sys.maxsize > 2**32
@@ -227,12 +227,13 @@ class MainWindow(QMainWindow):
         stop_btn.triggered.connect(lambda: self.tabs.currentWidget().stop())
         navtb.addAction(stop_btn)
 
-        if config["show_experimental_buttons"] == "yes":
-            rss_btn = QAction(
-                QIcon(os.path.join(glacier_path, 'images', 'rss-solid.png')), "Rss", self)
-            rss_btn.setStatusTip("RSS")
-            rss_btn.triggered.connect(lambda: self.display_rss_feeds())
-            navtb.addAction(rss_btn)
+        if 'show_experimental_buttons' in config:
+            if config["show_experimental_buttons"] == "yes":
+                rss_btn = QAction(
+                    QIcon(os.path.join(glacier_path, 'images', 'rss-solid.png')), "Rss", self)
+                rss_btn.setStatusTip("RSS")
+                rss_btn.triggered.connect(lambda: self.display_rss_feeds())
+                navtb.addAction(rss_btn)
 
         menu = QMenu(self)
 
@@ -880,6 +881,16 @@ app = QApplication(sys.argv)
 app.setApplicationName("Glacier")
 app.setOrganizationName("glacier")
 
+
+
+if not os.path.exists(os.path.expanduser('~/.glaciercnfg/config.toml')):
+    onboarding.start()
+    exit()
+
+
+
+
+
 glacier_path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
 # Think forward not backwards
@@ -896,10 +907,14 @@ except FileNotFoundError:
 except Exception as e:
     print("error with opening config file" + e.message)
 
-with open(glacier_path + "themes/" + config['theme'] + ".qss", 'r') as f:
-    style = f.read()
-    # Set the stylesheet of the application
-    app.setStyleSheet(style)
+if 'theme' in config:
+    with open(glacier_path + "themes/" + config['theme'] + ".qss", 'r') as f:
+        style = f.read()
+        app.setStyleSheet(style)
+else:
+    with open(glacier_path + "themes/default.qss", 'r') as f:
+        style = f.read()
+        app.setStyleSheet(style)
 
 if 'homepage' in config:
     if config['homepage'] == "default":
