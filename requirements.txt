@@ -4,3 +4,4 @@ validators
 requests
 toml
 feedparser
+lxml
