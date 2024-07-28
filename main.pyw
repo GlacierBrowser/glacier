@@ -22,6 +22,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 import requests
+from lxml.html import fromstring
 
 # Imports from files
 from components import adblock, devtools, onboarding
@@ -400,10 +401,10 @@ class MainWindow(QMainWindow):
         leftToolBar.setMovable(False)
         self.addToolBar(Qt.LeftToolBarArea, leftToolBar)
 
-        self.addToQuickSidebar(leftToolBar, "https://static.vecteezy.com/system/resources/previews/002/557/425/original/google-mail-icon-logo-isolated-on-transparent-background-free-vector.jpg", "https://gmail.com/", "Gmail")
-        self.addToQuickSidebar(leftToolBar, "https://www.youtube.com/favicon.ico", "https://www.youtube.com/", "Youtube")
-        self.addToQuickSidebar(leftToolBar, "https://en.wikipedia.org/favicon.ico", "https://en.wikipedia.org", "Wikipedia")
-        self.addToQuickSidebar(leftToolBar, "https://www.netflix.com/favicon.ico", "https://www.netflix.com/", "Netflix")
+        for url in config["fav_sites"]:
+            response = requests.get(url)
+            tree = fromstring(response.content)
+            self.addToQuickSidebar(leftToolBar, url+"/favicon.ico", url, tree.findtext('.//title'))
 
     def addToQuickSidebar(self, leftToolBar, icon, url, name):
         response = requests.get(icon)

@@ -49,9 +49,17 @@ class OnboardingWindow(QWidget):
         if newtabpagetext == 'Google':
             newtabpage = "https://www.google.ca/"
 
+        favsites = []
+        i = 0
+        for site in self.favsitecheckboxes:
+            if site.isChecked():
+                favsites.append(self.favsiteurls[i])
+            i+=1
+
         options = {
             "search_engine_url": search_engine,
-            "homepage": newtabpage
+            "homepage": newtabpage,
+            "fav_sites": favsites
         }
 
         with open(os.path.expanduser('~/.glaciercnfg/config.toml'), 'w') as f:
@@ -131,11 +139,16 @@ class OnboardingWindow(QWidget):
 
         layout_h = QHBoxLayout(self.widget)
 
+        self.favsiteurls = ["https://www.youtube.com/", "https://gmail.com/", "https://www.wikipedia.org/", "https://www.netflix.com/", "https://x.com/", "https://www.reddit.com/"]
         favsites = ["Youtube", "Gmail", "Wikipedia", "Netflix", "Twitter", "Reddit"]
+        self.favsitecheckboxes = []
 
+        i = 0
         for site in favsites:
-            CkBox = QCheckBox(text=site)
-            layout_h.addWidget(CkBox)
+            self.favsitecheckboxes.append(0) # Stop this error from happening "IndexError: list assignment index out of range"
+            self.favsitecheckboxes[i] = QCheckBox(text=site)
+            layout_h.addWidget(self.favsitecheckboxes[i])
+            i+=1
 
         layout.addWidget(self.widget)
 
