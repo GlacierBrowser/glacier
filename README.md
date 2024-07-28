@@ -42,3 +42,7 @@ GPL 3.0
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=GlacierBrowser/glacier&type=Date)](https://star-history.com/#GlacierBrowser/glacier&Date)
