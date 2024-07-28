@@ -1,2 +1,8 @@
 PyQt5>=5.6
 PyQtWebEngine
+validators
+requests
+toml
+webbrowser
+feedparser
+validators
