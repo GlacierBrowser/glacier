@@ -621,7 +621,61 @@ class MainWindow(QMainWindow):
                             r[i].parentNode.removeChild(r[i]);
                         }
                     }
+
+                    setInterval(function() {
+                        var elementsToHide = document.querySelectorAll('#gameadsbanner, .AdContainer');
+                
+                        elementsToHide.forEach(function(element) {
+                            if (element) {
+                                element.style.opacity = '0';
+                                element.style.width = '0';
+                                element.style.height = '0';
+                            }
+                        });
+                    }, 1000);
+
+                    setTimeout(function() {
+                        var glacier_browser_lol = document.getElementsById('stickyadcontainer');
+                        for (var i = (glacier_browser_lol.length-1); i >= 0; i--) {
+                            glacier_browser_lol[i].parentNode.remove();
+                        }
+
+                        var glacier_browser_lol = document.getElementsById('adngin-sidebar_top-0');
+                        for (var i = (glacier_browser_lol.length-1); i >= 0; i--) {
+                            glacier_browser_lol[i].parentNode.remove();
+                        }
+
+                        var glacier_browser_lol = document.getElementsById('ad_unit');
+                        for (var i = (glacier_browser_lol.length-1); i >= 0; i--) {
+                            glacier_browser_lol[i].parentNode.remove();
+                        }
+                    }, 2000);
                     """)
+
+                    if self.tabs.currentWidget().page().url().toString().startswith("https://www.youtube.com/"):
+                        self.tabs.currentWidget().page().runJavaScript("""
+                        var glacier_browser_lol = document.getElementsByTagName('ytd-in-feed-ad-layout-renderer');
+                        for (var i = (glacier_browser_lol.length-1); i >= 0; i--) {
+                            glacier_browser_lol[i].parentNode.removeChild(glacier_browser_lol[i]);
+                        }
+
+                        setTimeout(function() {
+                            var glacier_browser_lol = document.getElementsByTagName('ytd-ad-slot-renderer');
+                            for (var i = (glacier_browser_lol.length-1); i >= 0; i--) {
+                                glacier_browser_lol[i].parentNode.remove();
+                            }
+                        }, 2000);
+                        """)
+                    
+                    if self.tabs.currentWidget().page().url().toString().startswith("https://www.reddit.com/"):
+                        self.tabs.currentWidget().page().runJavaScript("""
+                        setTimeout(function() {
+                            var glacier_browser_lol = document.getElementsByTagName('shreddit-ad-post');
+                            for (var i = (glacier_browser_lol.length-1); i >= 0; i--) {
+                                glacier_browser_lol[i].remove();
+                            }
+                        }, 1000);
+                        """)
 
     def tab_open_doubleclick(self, i):
         if i == -1:  # No tab under the click
@@ -767,11 +821,25 @@ class WebEngineUrlRequestInterceptor(QtWebEngineCore.QWebEngineUrlRequestInterce
     def interceptRequest(self, info):
         url = info.requestUrl().toString()
 
+        # YOUTUBE AD BLOCKING
         if (
             url.host() == "www.youtube.com"
             and url.path() == "/get_video_info"
             and "&adformat=" in url.query()
         ):
+            info.block()
+        
+        # OTHER AD BLOCKING
+        blockedsites = ["s0.2mdn.net", "ad.doubleclick.net", "pagead2.googlesyndication.com", "m.doubleclick.net", "static.doubleclick.net",
+        "pagead2.googleadservices.com", "adservice.google.com"]
+
+        if url.host() in blockedsites:
+            info.block()
+        
+        # DIFFERENT OTHER AD BLOCKING
+        blockedpaths = ["/ads.js", "/pagead.js"]
+
+        if url.path() in blockedpaths:
             info.block()
 
 
