@@ -3,6 +3,4 @@ PyQtWebEngine
 validators
 requests
 toml
-webbrowser
 feedparser
-validators
