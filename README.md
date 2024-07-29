@@ -14,6 +14,7 @@
 
     git clone https://github.com/GlacierBrowser/glacier
     cd glacier
+    pip install -r requirements.txt
     python main.pyw
 
 ## Contributing
